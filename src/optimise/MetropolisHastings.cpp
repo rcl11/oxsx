@@ -260,12 +260,13 @@ std::vector<double>
 MetropolisHastings::JumpDraw(const std::vector<double>& thisStep_) const{
     std::vector<double> newStep(thisStep_);
     for(size_t i = 0; i < newStep.size(); i++){
-        newStep[i] = thisStep_.at(i) + Rand::Gaus(0, fSigmas.at(i));
+        if(fMinima.at(i) == fMaxima.at(i))
+            newStep[i] = fMinima.at(i);
+        else
+            newStep[i] = thisStep_.at(i) + Rand::Gaus(0, fSigmas.at(i));
     }
     return newStep;
 }
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // std::vector<double>                                                                             //
