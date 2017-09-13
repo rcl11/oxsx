@@ -65,6 +65,11 @@ BayesIntervalCalc::UpperBound(double expectedCounts_, int observedCounts_, doubl
 
 double 
 BayesIntervalCalc::UpperBound(PDF &b_prob_, double expectedCounts_, double expectedCountsSigma_, int observedCounts_, double cl_){
+    if(cl_ <= 0)
+        throw ValueError(Formatter() << "BayesIntervalCalc:: cl = " << cl_
+                         << " , must be >0!");
+
+    
     // Choose some signal points to test. Try using 50 equally spaced points between 0 and 2*expectedCounts_ (rounded to int)
     int n_sig_points = 50;
     std::vector<double> signals;
@@ -84,12 +89,6 @@ BayesIntervalCalc::UpperBound(PDF &b_prob_, double expectedCounts_, double expec
     //Fill TGraph object with cumulative posterior values to be interpolated for signal at CL=cl_
     TGraph graph = TGraph(n_sig_points,&mlhs[0],&signals[0]);
     
-    for(size_t i=0; i<mlhs.size(); i++) {
-        double x=0.0;
-        double y=0.0;
-        graph.GetPoint(i,x,y);
-        std::cout << "i: " << i <<  ", x: " << x << ", y: " << y << std::endl;
-    }
     //Performs a linear interpolation
     return graph.Eval(cl_);
 }
@@ -111,10 +110,10 @@ double BayesIntervalCalc::Marginalise(PDF& b_prob_, double s, double b, double w
 }
 
 double BayesIntervalCalc::CumulativePosterior(PDF& b_prob, double signal1, double signal2, double b, double width, int n){
-    // Fix signal integral to run between signal1 and signal2 in 10000 steps for now
+    // Fix signal integral to run between signal1 and signal2 in 10000 steps
     int n_sig_points = 10000;
     // Need to compute the total normalisation as well 
-    // Compute normalisation by integrating signal from 0 to 1000(inf) in 10000 steps for now
+    // Compute normalisation by integrating signal from 0 to 1000(inf) in 10000 steps
     int n_norm_sig_points = 10000;
     
     TH1D sig_integral = TH1D("sig","sig",n_sig_points, signal1, signal2);
