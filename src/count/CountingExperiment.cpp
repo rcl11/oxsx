@@ -49,7 +49,8 @@ CountingExperiment::CountSignal(){
         if(fCuts.PassesCuts(transformed, cutLog))
             signalCount++;
     }    
-    fResult.SetSignal(1. * signalCount/fSignalDataSet -> GetNEntries(), fSignalName, cutLog);
+    if(fSignalGenerated>1) fResult.SetSignal(1. * signalCount/fSignalGenerated, fSignalName, cutLog);
+    else fResult.SetSignal(1. * signalCount/fSignalDataSet -> GetNEntries(), fSignalName, cutLog);
 }
 
 void
@@ -76,8 +77,9 @@ CountingExperiment::GetCountingResult() const{
 }
 
 void
-CountingExperiment::SetSignal(DataSet* mcData_, const std::string& name_){
+CountingExperiment::SetSignal(DataSet* mcData_, const std::string& name_, const int& n_generated_=1){
     fSignalDataSet = mcData_;
     fSignalName    = name_;
+    fSignalGenerated = n_generated_;
 }
                                                                           
